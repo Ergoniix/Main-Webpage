@@ -63,10 +63,15 @@ const contactOptions = [
   },
 ];
 
-const CONTACT_EMAIL = "honngai.buchem@ergonix.co.in";
+const CONTACTS = [
+  { name: "Honngai Buchem", email: "honngai.buchem@ergonix.co.in" },
+  { name: "Chingmei Menhahu", email: "chingmei.menhahu@ergonix.co.in" },
+];
+
+const CONTACT_EMAILS = CONTACTS.map((contact) => contact.email).join(",");
 
 function mailto(subject: string, body: string) {
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `mailto:${CONTACT_EMAILS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export default function Home() {
@@ -167,11 +172,18 @@ export default function Home() {
           </div>
 
           <div className="contact-modal-footer">
-            <a className="contact-email" href={`mailto:${CONTACT_EMAIL}`}>
+            <div className="contact-email-group">
               <span className="contact-email-icon"><Mail size={22} strokeWidth={1.5}/></span>
-              <span><strong>{CONTACT_EMAIL}</strong><small>Prefer to email directly?</small></span>
-            </a>
-            <p>We usually respond within<br/>1–2 business days.</p>
+              <div className="contact-email-list">
+                {CONTACTS.map((contact) => (
+                  <a className="contact-email" href={`mailto:${contact.email}`} key={contact.email}>
+                    <strong>{contact.name}</strong>
+                    <small>{contact.email}</small>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <p>All inquiries go to both of us.<br/>We usually respond within 1–2 business days.</p>
           </div>
         </section>
       </div>
