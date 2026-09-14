@@ -172,16 +172,19 @@ export default function Home() {
           </div>
 
           <div className="contact-modal-footer">
-            <div className="contact-email-group">
-              <span className="contact-email-icon"><Mail size={22} strokeWidth={1.5}/></span>
-              <div className="contact-email-list">
-                {CONTACTS.map((contact) => (
-                  <a className="contact-email" href={`mailto:${contact.email}`} key={contact.email}>
+            <div className="contact-email-list">
+              {CONTACTS.map((contact) => (
+                <a className="contact-email" href={`mailto:${contact.email}`} key={contact.email}>
+                  <span className="contact-email-icon">
+                    <Mail size={22} strokeWidth={1.5}/>
+                  </span>
+            
+                  <span className="contact-email-copy">
                     <strong>{contact.name}</strong>
                     <small>{contact.email}</small>
-                  </a>
-                ))}
-              </div>
+                  </span>
+                </a>
+              ))}
             </div>
             <p>All inquiries go to both of us.<br/>We usually respond within 1–2 business days.</p>
           </div>
