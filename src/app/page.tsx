@@ -1,7 +1,21 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { ArrowUpRight, Code2, Cpu, Layers3 } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  Code2,
+  Cpu,
+  FileText,
+  Headphones,
+  Layers3,
+  Mail,
+  MessageSquare,
+  Users,
+  X,
+} from "lucide-react";
 
 const Scene3D = dynamic(() => import("@/components/Scene3D"), { ssr: false });
 
@@ -11,7 +25,71 @@ const services = [
   { icon: Cpu, title: "AI & Automation", text: "Practical AI integrations and automation that reduce repetitive work and make products feel smarter." },
 ];
 
+const contactOptions = [
+  {
+    icon: Briefcase,
+    title: "Project inquiry",
+    text: "Discuss a new website, software or idea",
+    subject: "Project inquiry — Ergonix",
+    body: "Hi Ergonix,\n\nI’d like to discuss a new project.\n\nProject / idea:\nTimeline:\nBudget range:\n\nThanks!",
+  },
+  {
+    icon: Users,
+    title: "Partnership",
+    text: "Explore collaboration opportunities",
+    subject: "Partnership inquiry — Ergonix",
+    body: "Hi Ergonix,\n\nI’d like to explore a potential partnership or collaboration.\n\nA few details:\n",
+  },
+  {
+    icon: MessageSquare,
+    title: "General inquiry",
+    text: "Ask a question or say hello",
+    subject: "General inquiry — Ergonix",
+    body: "Hi Ergonix,\n\n",
+  },
+  {
+    icon: Headphones,
+    title: "Support",
+    text: "Get help with an existing project",
+    subject: "Project support — Ergonix",
+    body: "Hi Ergonix,\n\nI need help with an existing project.\n\nProject:\nIssue / request:\n",
+  },
+  {
+    icon: FileText,
+    title: "Careers",
+    text: "Join our team",
+    subject: "Careers — Ergonix",
+    body: "Hi Ergonix,\n\nI’m interested in career opportunities with Ergonix.\n\nRole / area of interest:\nPortfolio / LinkedIn:\n",
+  },
+];
+
+const CONTACT_EMAIL = "honngai.buchem@ergonix.co.in";
+
+function mailto(subject: string, body: string) {
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 export default function Home() {
+  const [contactOpen, setContactOpen] = useState(false);
+
+  useEffect(() => {
+    if (!contactOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setContactOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [contactOpen]);
+
   return <main className="site-shell">
     <div className="noise" />
     <nav className="navbar">
@@ -55,10 +133,48 @@ export default function Home() {
       <div className="section-head"><div><div className="section-kicker">Approach / 02</div><h2>Less noise. More working product.</h2></div><p className="section-note">Clear structure, responsive behavior, practical technology choices and details that make the final result feel premium.</p></div>
       <div className="cta-panel glow-ring" id="contact">
         <div><div className="section-kicker">Have something in mind?</div><h3>Let’s turn the idea into something people can actually use.</h3></div>
-        <a className="primary-btn" href="#top">Start a conversation <ArrowUpRight size={16}/></a>
+        <button className="primary-btn conversation-btn" type="button" onClick={() => setContactOpen(true)}>Start a conversation <ArrowUpRight size={16}/></button>
       </div>
     </section>
 
     <footer className="footer"><span>© 2026 ERGONIX</span><span>Designed & engineered for the web.</span></footer>
+
+    {contactOpen && (
+      <div className="contact-modal-backdrop" role="presentation" onMouseDown={() => setContactOpen(false)}>
+        <section
+          className="contact-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="contact-modal-title"
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <button className="contact-modal-close" type="button" onClick={() => setContactOpen(false)} aria-label="Close contact dialog">
+            <X size={25} strokeWidth={1.5}/>
+          </button>
+
+          <div className="contact-modal-kicker">Start a conversation</div>
+          <h2 id="contact-modal-title">How can we <span>help?</span></h2>
+          <p className="contact-modal-intro">Choose a topic and we’ll open your email app with the details pre-filled.</p>
+
+          <div className="contact-options">
+            {contactOptions.map((option) => (
+              <a className="contact-option" href={mailto(option.subject, option.body)} key={option.title}>
+                <span className="contact-option-icon"><option.icon size={23} strokeWidth={1.6}/></span>
+                <span className="contact-option-copy"><strong>{option.title}</strong><small>{option.text}</small></span>
+                <ArrowRight className="contact-option-arrow" size={24} strokeWidth={1.5}/>
+              </a>
+            ))}
+          </div>
+
+          <div className="contact-modal-footer">
+            <a className="contact-email" href={`mailto:${CONTACT_EMAIL}`}>
+              <span className="contact-email-icon"><Mail size={22} strokeWidth={1.5}/></span>
+              <span><strong>{CONTACT_EMAIL}</strong><small>Prefer to email directly?</small></span>
+            </a>
+            <p>We usually respond within<br/>1–2 business days.</p>
+          </div>
+        </section>
+      </div>
+    )}
   </main>;
 }
